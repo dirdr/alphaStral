@@ -84,14 +84,14 @@ uv run python main.py --p1 random --p2 random --move-delay 2
 ## Results
 
 After each run a JSON file lands in `runs/` and a visual HTML report in `reports/`.
-Open the report in any browser — no server needed, everything is self-contained.
+Open the report in your browser.
 
 ```sh
 uv run python -m viz runs/<your_run_file>.json
 open reports/<your_run_file>.html
 ```
 
-![Random vs Random benchmark report](docs/example_random_vs_random.png)
+![Random vs Random benchmark report](./images/example_random_vs_random.png)
 
 ## Fine-tuning
 
