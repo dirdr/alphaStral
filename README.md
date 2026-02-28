@@ -1,6 +1,17 @@
 # alphaStral
 
+A project by the Rustaceans Teams:
+
+- Adrien Pelfresne [github](https://github.com/dirdr) | [linkedin](https://www.linkedin.com/in/adrien-pelfresne/) | [resume](https://raw.githubusercontent.com/dirdr/resume_adrien_pelfresne/main/raw/resume_adrien_pelfresne_software_engineer.pdf)
+- Alexis Vapaille [github](https://github.com/AlexVplle) | [linkedin](https://www.linkedin.com/in/alexis-vapaille/) | [resume](https://alexvplle.com/CV_Alexis_Vapaille.pdf)
+
+<img src="logo_team_rustacean.png" alt="drawing" width="200"/>
+
+## About
+
 Fine-tuned vs Foundation, Who will win a Pokemon Showdown Match ?
+
+![David-Goliath](./david_goliath_illustr.webp)
 
 ## Run The Battle
 
