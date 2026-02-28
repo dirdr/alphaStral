@@ -11,6 +11,10 @@ from bot.schema import BattleAction, BattleState, MoveAction, SwitchAction
 class RandomAgent(BattleAgent):
     """Chooses uniformly at random between all legal moves and switches."""
 
+    @property
+    def name(self) -> str:
+        return "random"
+
     def choose_action(self, state: BattleState) -> BattleAction:
         all_options: list[BattleAction] = [
             MoveAction(move_id=move_id) for move_id in state.moves

@@ -18,6 +18,7 @@ import argparse
 import logging
 import os
 
+from dotenv import load_dotenv
 from poke_env import LocalhostServerConfiguration
 
 from benchmark.runner import BattleRunner
@@ -73,6 +74,7 @@ def build_agent(name: str) -> BattleAgent:
 
 
 def main() -> None:
+    load_dotenv()
     parser = argparse.ArgumentParser(description="AlphaStral battle runner")
     parser.add_argument("--p1", default="random", help="Agent for player 1")
     parser.add_argument("--p2", default="random", help="Agent for player 2")

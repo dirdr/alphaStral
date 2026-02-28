@@ -7,6 +7,7 @@ dependencies = [
     "huggingface-hub>=0.24.0",
     "mistralai>=1.0.0",
     "poke-env>=0.11.0",
+    "python-dotenv>=1.0.0",
     "requests>=2.32.5",
 ]
 

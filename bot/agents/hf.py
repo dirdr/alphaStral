@@ -28,7 +28,7 @@ class HFAgent(BattleAgent):
 
     @property
     def name(self) -> str:
-        return self._model_id
+        return self._model_id.split("/")[-1]
 
     def choose_action(self, state: BattleState) -> BattleAction:
         prompt = _build_prompt(state)

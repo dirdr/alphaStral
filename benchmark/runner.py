@@ -9,17 +9,25 @@ from __future__ import annotations
 
 import asyncio
 import logging
+import re
 import time
 import uuid
 
 from poke_env import ServerConfiguration
 from poke_env.concurrency import POKE_LOOP
+from poke_env.ps_client import AccountConfiguration
 
 from benchmark.types import BattleResult, BenchmarkReport
 from bot.agent import BattleAgent
 from bot.player import AgentPlayer
 
 logger = logging.getLogger(__name__)
+
+
+def _showdown_username(agent_name: str) -> str:
+    """Sanitize an agent name into a valid Showdown username (≤18 chars, alphanumeric/hyphens)."""
+    name = re.sub(r"[^a-zA-Z0-9 -]", "-", agent_name)
+    return name[:18].strip("-")
 
 
 class BattleRunner:
@@ -54,12 +62,14 @@ class BattleRunner:
     ) -> BenchmarkReport:
         p1 = AgentPlayer(
             agent=agent1,
+            account_configuration=AccountConfiguration(_showdown_username(agent1.name), None),
             battle_format=self._battle_format,
             server_configuration=self._server_configuration,
             move_delay=self._move_delay,
         )
         p2 = AgentPlayer(
             agent=agent2,
+            account_configuration=AccountConfiguration(_showdown_username(agent2.name), None),
             battle_format=self._battle_format,
             server_configuration=self._server_configuration,
             move_delay=self._move_delay,
