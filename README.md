@@ -10,17 +10,17 @@ A project by the Rustaceans Teams:
 
   > I'm Alexis Vapaille, a Backend Software Developer who loves Distributed Systems and Rust. I also build neural networks from scratch in Rust - check out [nn_lib](https://github.com/AlexVplle/nn_lib). If you are hiring, please reach out to me :)
 
-<img src="logo_team_rustacean.png" alt="drawing" width="200"/>
+<img src="images/logo_team_rustacean.png" alt="drawing" width="200"/>
 
 ## About
 
 Fine-tuned vs Foundation, Who will win a Pokemon Showdown Match ?
 
-![David-Goliath](./davidgoliath.png)
+![David-Goliath](images/davidgoliath.png)
 
 ### Showdown server
 
-<img src="showdown_logo.png" alt="drawing" width="100"/>
+<img src="images/showdown_logo.png" alt="drawing" width="100"/>
 
 [Pokemon ShowDown](https://en.wikipedia.org/wiki/Pok%C3%A9mon_Showdown) is the biggest Pokemon Battle online platform. It will act as the game engine of the model battle.
 Battles will run on the local machine running the program.
@@ -75,11 +75,23 @@ uv run python main.py --p1 random --p2 random --move-delay 2
 
 1. Go to the [locally hosted showdown](http://localhost:8000) and click `Watch Battle`, you will see the current running battle on the right side panel
 
-![battle-example](./battle_guide.png)
+![battle-example](images/battle_guide.png)
 
 1. Click on the current battle, and watch it !
 
-![watch_battle](./battle_live.png)
+![watch_battle](images/battle_live.png)
+
+## Results
+
+After each run a JSON file lands in `runs/` and a visual HTML report in `reports/`.
+Open the report in any browser — no server needed, everything is self-contained.
+
+```sh
+uv run python -m viz runs/<your_run_file>.json
+open reports/<your_run_file>.html
+```
+
+![Random vs Random benchmark report](docs/example_random_vs_random.png)
 
 ## Fine-tuning
 
