@@ -206,7 +206,6 @@ class LLMBattleAgent(BattleAgent):
     def __init__(self, model_id: str, throttle_s: float = 2.0) -> None:
         self._model_id = model_id
         self._name = f"{model_id}-{uuid.uuid4().hex[:6]}"
-        self._histories: dict[str, list[dict]] = {}  # battle_tag -> messages
         self._turn_stats: list[TurnStat] = []
         self._throttle_s = throttle_s
         self._last_call_end: float = 0.0
@@ -224,20 +223,22 @@ class LLMBattleAgent(BattleAgent):
         """Call the model and return raw text response."""
         ...
 
+    def _build_messages(self, prompt: str) -> list[dict]:
+        """Build the message list for one API call.
+
+        Stateless by default — override or extend here to inject conversation history.
+        """
+        return [
+            {"role": "system", "content": _SYSTEM_PROMPT},
+            {"role": "user", "content": prompt},
+        ]
+
     def choose_action(self, state: BattleState) -> BattleAction:
         tag = state.battle_tag or str(id(self))
-        if state.turn == 1 or tag not in self._histories:
-            self._histories[tag] = []
-
-        history = self._histories[tag]
         prompt = _build_prompt(state)
-        messages = (
-            [{"role": "system", "content": _SYSTEM_PROMPT}]
-            + history
-            + [{"role": "user", "content": prompt}]
-        )
+        messages = self._build_messages(prompt)
 
-        logger.debug("[%s] Turn %d · history=%d msgs", self._model_id, state.turn, len(history))
+        logger.debug("[%s] Turn %d", self._model_id, state.turn)
 
         if self._throttle_s > 0:
             wait = self._throttle_s - (time.perf_counter() - self._last_call_end)
@@ -251,10 +252,6 @@ class LLMBattleAgent(BattleAgent):
             logger.debug("[%s] Response: %s", self._model_id, raw)
             action = _parse_action(raw, state, self._model_id)
             used_fallback = False
-            history += [
-                {"role": "user", "content": prompt},
-                {"role": "assistant", "content": raw},
-            ]
         finally:
             self._last_call_end = time.perf_counter()
 
@@ -265,7 +262,7 @@ class LLMBattleAgent(BattleAgent):
                 agent=self._model_id,
                 decision_ms=decision_ms,
                 used_fallback=used_fallback,
-                history_msgs=len(history),
+                history_msgs=len(messages) - 2,
                 action_type=type(action).__name__.replace("Action", "").lower(),
             )
         )
