@@ -66,6 +66,25 @@ uv run python main.py --p1 random --p2 random --n 10
 uv run python main.py --format gen9ou --n 1 --move-delay 2
 ```
 
+## Fine-tuning
+
+The dataset is scraped from Pokemon Showdown replays (gen9ou, 1500+ ELO) and enriched with PokeAPI data (types, stats, move power/category).
+
+```sh
+uv run python finetune/scraper.py
+```
+
+The fine-tuning is done on Google Colab using the notebook at `finetune/finetune_colab.ipynb`.
+
+Each sample looks like:
+
+```json
+{
+  "prompt": "Turn 3. Weather: none. Your pokemon: Magnezone (99/100 HP, healthy) | Type: electric/steel | Atk: 70 SpA: 130 Spe: 60. Opponent: Raging Bolt (100/100 HP, healthy) | Type: electric/dragon | Def: 91 SpD: 89 Spe: 75 | Moves seen: Air Slash (flying, 75pw, special). What move do you use?",
+  "completion": "Flash Cannon (steel, 80pw, special)"
+}
+```
+
 ## Model
 
 The battle will be between
