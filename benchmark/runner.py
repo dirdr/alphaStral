@@ -14,7 +14,6 @@ import uuid
 
 from poke_env import ServerConfiguration
 from poke_env.concurrency import POKE_LOOP
-from poke_env.ps_client import AccountConfiguration
 
 from benchmark.types import BattleResult, BenchmarkReport
 from bot.agent import BattleAgent
@@ -28,14 +27,10 @@ class BattleRunner:
         self,
         server_configuration: ServerConfiguration,
         battle_format: str = "gen9randombattle",
-        account1: AccountConfiguration | None = None,
-        account2: AccountConfiguration | None = None,
         move_delay: float = 0.0,
     ) -> None:
         self._server_configuration = server_configuration
         self._battle_format = battle_format
-        self._account1 = account1
-        self._account2 = account2
         self._move_delay = move_delay
 
     def run(
@@ -59,25 +54,18 @@ class BattleRunner:
     ) -> BenchmarkReport:
         p1 = AgentPlayer(
             agent=agent1,
-            account_configuration=self._account1,
             battle_format=self._battle_format,
             server_configuration=self._server_configuration,
             move_delay=self._move_delay,
         )
         p2 = AgentPlayer(
             agent=agent2,
-            account_configuration=self._account2,
             battle_format=self._battle_format,
             server_configuration=self._server_configuration,
             move_delay=self._move_delay,
         )
 
-        is_local = "localhost" in self._server_configuration.websocket_url
-        watch_url = (
-            "http://localhost.psim.us/?port=8000"
-            if is_local
-            else f"https://play.pokemonshowdown.com → search '{p1.username}'"
-        )
+        watch_url = "http://localhost.psim.us/?port=8000"
 
         logger.info(
             "Battle session: %s (%s) vs %s (%s) · %d battle(s) · format=%s",
@@ -88,8 +76,6 @@ class BattleRunner:
             n_battles,
             self._battle_format,
         )
-        logger.debug("Auth mode: %s", "credentials" if self._account1 else "guest")
-
         print(f"  {agent1.name} ({p1.username})  vs  {agent2.name} ({p2.username})")
         print(f"  Watch: {watch_url}")
         print()
