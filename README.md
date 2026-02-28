@@ -8,7 +8,7 @@ A project by the Rustaceans Teams:
 
 - Alexis Vapaille [github](https://github.com/AlexVplle) | [linkedin](https://www.linkedin.com/in/alexis-vapaille/) | [resume](https://alexvplle.com/CV_Alexis_Vapaille.pdf)
 
->
+  > I'm Alexis Vapaille, a Backend Software Developer who loves Distributed Systems and Rust. I also build neural networks from scratch in Rust - check out [nn_lib](https://github.com/AlexVplle/nn_lib). If you are hiring, please reach out to me :)
 
 <img src="logo_team_rustacean.png" alt="drawing" width="200"/>
 
