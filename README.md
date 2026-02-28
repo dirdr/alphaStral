@@ -38,10 +38,10 @@ Then run battles:
 
 ```sh
 uv run python main.py --p1 random --p2 random --n 10
+```
 
 > [!warning]
 > Due to a bug, the live battle will only be available on Chrome and Firefox, Not safari :()
-```
 
 ### CLI reference
 
