@@ -26,6 +26,8 @@ from poke_env import LocalhostServerConfiguration
 
 from benchmark.export import write_report
 from benchmark.runner import BattleRunner
+from viz.loader import load_report
+from viz.report import build_report
 from bot.agent import BattleAgent
 from bot.agents.random import RandomAgent
 
@@ -151,7 +153,12 @@ def main() -> None:
     out = args.output or _default_output(args.p1, args.p2, args.n)
     Path(out).parent.mkdir(parents=True, exist_ok=True)
     write_report(report, out)
-    print(f"  Report saved to {out}")
+    print(f"  JSON  → {out}")
+
+    html_path = Path("reports") / Path(out).with_suffix(".html").name
+    html_path.parent.mkdir(parents=True, exist_ok=True)
+    html_path.write_text(build_report(load_report(Path(out))), encoding="utf-8")
+    print(f"  HTML  → {html_path}")
 
 
 if __name__ == "__main__":

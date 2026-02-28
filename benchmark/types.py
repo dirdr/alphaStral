@@ -24,6 +24,9 @@ class TurnStat:
     used_fallback: bool
     history_msgs: int  # context size entering this turn
     action_type: str  # "move" | "switch"
+    reasoning: str = ""
+    move_id: str = ""  # Showdown move ID; empty for switches
+    effectiveness: float | None = None  # 0=immune 0.5=nve 1=neutral 2=SE; None for switches/status
 
 
 @dataclass

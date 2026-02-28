@@ -16,9 +16,54 @@ from abc import abstractmethod
 
 from benchmark.types import TurnStat
 from bot.agent import BattleAgent
-from bot.schema import BattleAction, BattleState, MoveAction, SideConditions, SwitchAction
+from bot.schema import (
+    ActivePokemonState,
+    BattleAction,
+    BattleState,
+    MoveAction,
+    SideConditions,
+    SwitchAction,
+)
 
 logger = logging.getLogger(__name__)
+
+_TYPE_CHART: dict | None = None
+
+
+def _get_type_chart() -> dict:
+    global _TYPE_CHART
+    if _TYPE_CHART is None:
+        from poke_env.data.gen_data import GenData
+
+        _TYPE_CHART = GenData.from_gen(9).type_chart
+    return _TYPE_CHART
+
+
+def _move_effectiveness(move_id: str, opp: ActivePokemonState) -> float | None:
+    try:
+        from poke_env.battle.move import Move
+        from poke_env.battle.pokemon import Pokemon
+        from poke_env.battle.pokemon_type import PokemonType
+
+        move = Move(move_id, gen=9)
+        if move.base_power == 0:
+            return None
+        move_type = move.type
+        type_chart = _get_type_chart()
+
+        if opp.terastallized and opp.tera_type:
+            opp_types = [PokemonType[opp.tera_type.upper()]]
+        else:
+            opp_types = [t for t in Pokemon(gen=9, species=opp.species).types if t]
+
+        multiplier = 1.0
+        for t in opp_types:
+            multiplier *= move_type.damage_multiplier(t, type_chart=type_chart)
+        return multiplier
+    except Exception:
+        logger.debug("effectiveness lookup failed for move=%s opp=%s", move_id, opp.species)
+        return None
+
 
 _SYSTEM_PROMPT = """\
 You are a competitive Pokémon battle agent. Choose the best action each turn.
@@ -263,15 +308,25 @@ class LLMBattleAgent(BattleAgent):
         finally:
             self._last_call_end = time.perf_counter()
 
+        if isinstance(action, MoveAction):
+            chosen_move_id = action.move_id
+            effectiveness = _move_effectiveness(action.move_id, state.opp_active)
+        else:
+            chosen_move_id = ""
+            effectiveness = None
+
         self._turn_stats.append(
             TurnStat(
                 battle_tag=tag,
                 turn=state.turn,
-                agent=self._model_id,
+                agent=self._name,
                 decision_ms=decision_ms,
                 used_fallback=used_fallback,
                 history_msgs=len(messages) - 2,
                 action_type=type(action).__name__.replace("Action", "").lower(),
+                reasoning=getattr(action, "reasoning", ""),
+                move_id=chosen_move_id,
+                effectiveness=effectiveness,
             )
         )
 

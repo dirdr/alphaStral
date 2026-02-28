@@ -17,9 +17,6 @@ data/finetune/
 # Replays saved locally
 replays/
 
-# Simulation data and reports
-runs/
-reports/
 
 # uv
 .python-version
