@@ -209,6 +209,8 @@ class LLMBattleAgent(BattleAgent):
         self._turn_stats: list[TurnStat] = []
         self._throttle_s = throttle_s
         self._last_call_end: float = 0.0
+        self._current_tag: str | None = None
+        self._last_exchange: tuple[str, str] | None = None
 
     @property
     def name(self) -> str:
@@ -224,17 +226,22 @@ class LLMBattleAgent(BattleAgent):
         ...
 
     def _build_messages(self, prompt: str) -> list[dict]:
-        """Build the message list for one API call.
-
-        Stateless by default — override or extend here to inject conversation history.
-        """
-        return [
-            {"role": "system", "content": _SYSTEM_PROMPT},
-            {"role": "user", "content": prompt},
-        ]
+        msgs: list[dict] = [{"role": "system", "content": _SYSTEM_PROMPT}]
+        if self._last_exchange is not None:
+            prev_prompt, prev_response = self._last_exchange
+            msgs += [
+                {"role": "user", "content": prev_prompt},
+                {"role": "assistant", "content": prev_response},
+            ]
+        msgs.append({"role": "user", "content": prompt})
+        return msgs
 
     def choose_action(self, state: BattleState) -> BattleAction:
         tag = state.battle_tag or str(id(self))
+        if tag != self._current_tag:
+            self._current_tag = tag
+            self._last_exchange = None
+
         prompt = _build_prompt(state)
         messages = self._build_messages(prompt)
 
@@ -252,6 +259,7 @@ class LLMBattleAgent(BattleAgent):
             logger.debug("[%s] Response: %s", self._model_id, raw)
             action = _parse_action(raw, state, self._model_id)
             used_fallback = False
+            self._last_exchange = (prompt, raw)
         finally:
             self._last_call_end = time.perf_counter()
 
