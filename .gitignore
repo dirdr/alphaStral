@@ -1,0 +1,24 @@
+# Environment
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+
+# Data (can be large)
+data/raw/
+data/finetune/
+*.jsonl
+
+# Replays saved locally
+replays/
+
+# uv
+.python-version
+
+# macOS
+.DS_Store
