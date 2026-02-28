@@ -98,6 +98,11 @@ open reports/<your_run_file>.html
 
 ## Fine-tuning
 
+> [!warning]
+> To make thing go brrr, we bought collab pro and fine tuned our model on 100k samples with H100 GPU. Do not try this at home!
+
+![go_brr](./images/gpus_go_brrr.webp)
+
 The dataset is scraped from Pokemon Showdown replays (gen9ou, 1500+ ELO) and enriched with PokeAPI data (types, stats, move power/category).
 
 ```sh
