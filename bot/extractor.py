@@ -64,6 +64,7 @@ class StateExtractor:
         ]
 
         return BattleState(
+            battle_tag=battle.battle_tag,
             turn=battle.turn,
             active=active,
             opp_active=opp_active,

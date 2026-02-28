@@ -95,6 +95,7 @@ class BattleRunner:
         elapsed = time.time() - start
 
         results = self._collect_results(p1, p2, agent1.name, agent2.name)
+        turn_stats = getattr(agent1, "turn_stats", []) + getattr(agent2, "turn_stats", [])
         report = BenchmarkReport(
             p1_agent=agent1.name,
             p2_agent=agent2.name,
@@ -103,6 +104,8 @@ class BattleRunner:
             p2_wins=p2.n_won_battles,
             draws=n_battles - p1.n_won_battles - p2.n_won_battles,
             results=results,
+            total_duration_s=elapsed,
+            turn_stats=turn_stats,
         )
 
         logger.info(

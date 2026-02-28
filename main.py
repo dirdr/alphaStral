@@ -17,10 +17,14 @@ from __future__ import annotations
 import argparse
 import logging
 import os
+import re
+import uuid
+from pathlib import Path
 
 from dotenv import load_dotenv
 from poke_env import LocalhostServerConfiguration
 
+from benchmark.export import write_report
 from benchmark.runner import BattleRunner
 from bot.agent import BattleAgent
 from bot.agents.random import RandomAgent
@@ -48,6 +52,17 @@ def _setup_logging(level_name: str) -> None:
     if level == logging.DEBUG:
         # Also surface poke-env authentication and connection events.
         logging.getLogger("poke_env.ps_client.ps_client").setLevel(logging.DEBUG)
+
+
+def _safe(name: str) -> str:
+    """Sanitize an agent name for use in a filename."""
+    return re.sub(r"[^a-zA-Z0-9_-]", "-", name)
+
+
+def _default_output(p1: str, p2: str, n: int) -> str:
+    tag = uuid.uuid4().hex[:6]
+    filename = f"{_safe(p1)}_vs_{_safe(p2)}_n{n}_{tag}.json"
+    return str(Path("runs") / filename)
 
 
 def build_agent(name: str) -> BattleAgent:
@@ -93,6 +108,12 @@ def main() -> None:
         choices=["DEBUG", "INFO", "WARNING", "ERROR"],
         help="Log verbosity (also reads LOG_LEVEL env var). Default: INFO.",
     )
+    parser.add_argument(
+        "--output",
+        default=None,
+        metavar="PATH",
+        help="Write JSON report to this path (default: runs/<p1>_vs_<p2>_n<n>_<hash>.json).",
+    )
     args = parser.parse_args()
 
     _setup_logging(args.log_level)
@@ -117,7 +138,12 @@ def main() -> None:
         battle_format=args.format,
         move_delay=args.move_delay,
     )
-    runner.run(agent1, agent2, n_battles=args.n)
+    report = runner.run(agent1, agent2, n_battles=args.n)
+
+    out = args.output or _default_output(args.p1, args.p2, args.n)
+    Path(out).parent.mkdir(parents=True, exist_ok=True)
+    write_report(report, out)
+    print(f"  Report saved to {out}")
 
 
 if __name__ == "__main__":

@@ -42,6 +42,7 @@ class SideConditions:
 
 @dataclass
 class BattleState:
+    battle_tag: str
     turn: int
     active: ActivePokemonState
     opp_active: ActivePokemonState  # only revealed information
