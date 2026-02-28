@@ -21,49 +21,7 @@ from bot.schema import BattleAction, BattleState, MoveAction, SideConditions, Sw
 logger = logging.getLogger(__name__)
 
 _SYSTEM_PROMPT = """\
-You are a competitive Pokémon player. Your goal is to win battles.
-Follow these principles strictly, in priority order:
-
-DECISION PRIORITY (apply top to bottom each turn):
-1. KO NOW — if you can knock out the opponent this turn, use the most damaging move.
-2. ESCAPE BAD MATCHUP — if the opponent is super-effective against you AND you have \
-a resist on your bench, switch to it.
-3. HIT SUPER-EFFECTIVELY — use a super-effective move if available.
-4. SETUP — use a stat-boosting move (Swords Dance, Nasty Plot, Calm Mind…) only when \
-the opponent clearly cannot KO you next turn.
-5. STATUS — use a status move (Toxic, Will-O-Wisp, Thunder Wave…) when you have a \
-significant HP advantage.
-6. BEST MOVE — otherwise use your highest base-power move.
-
-SWITCHING RULES:
-- Switch when your type is weak to the opponent's last used move AND a bench Pokémon \
-resists or is immune to it.
-- Never switch into a fainted or critically low HP Pokémon unless it is your only option.
-- Preserve your strongest Pokémon for the late game.
-
-TYPE CHART (attacker > defender):
-Fire     > Grass, Ice, Bug, Steel
-Water    > Fire, Rock, Ground
-Electric > Water, Flying  |  immune: Ground
-Grass    > Water, Rock, Ground
-Ice      > Dragon, Flying, Grass, Ground
-Fighting > Normal, Rock, Steel, Ice, Dark
-Ground   > Fire, Electric, Poison, Rock, Steel  |  immune: Flying
-Psychic  > Fighting, Poison
-Dark     > Psychic, Ghost
-Dragon   > Dragon
-Steel    > Ice, Rock, Fairy
-Fairy    > Dragon, Dark, Fighting
-Ghost    > Ghost, Psychic
-Poison   > Grass, Fairy
-Rock     > Fire, Ice, Flying, Bug
-Flying   > Grass, Fighting, Bug
-Bug      > Grass, Psychic, Dark
-
-TERASTALLIZATION:
-Use tera when it lets you hit super-effectively for a KO, or removes a weakness that \
-would otherwise cause you to faint.
-
+You are a competitive Pokémon battle agent. Choose the best action each turn.
 Respond ONLY with a single valid JSON object — no markdown, no explanation outside it.
 """
 
@@ -245,7 +203,7 @@ class LLMBattleAgent(BattleAgent):
     History resets automatically at turn 1 of each new battle.
     """
 
-    def __init__(self, model_id: str, throttle_s: float = 1.0) -> None:
+    def __init__(self, model_id: str, throttle_s: float = 2.0) -> None:
         self._model_id = model_id
         self._name = f"{model_id}-{uuid.uuid4().hex[:6]}"
         self._histories: dict[str, list[dict]] = {}  # battle_tag -> messages
@@ -297,11 +255,6 @@ class LLMBattleAgent(BattleAgent):
                 {"role": "user", "content": prompt},
                 {"role": "assistant", "content": raw},
             ]
-        except Exception as exc:
-            decision_ms = (time.perf_counter() - t0) * 1000
-            logger.warning("[%s] Error (%s), falling back to random.", self._model_id, exc)
-            action = _random_fallback(state)
-            used_fallback = True
         finally:
             self._last_call_end = time.perf_counter()
 

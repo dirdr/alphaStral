@@ -25,9 +25,22 @@ logger = logging.getLogger(__name__)
 
 
 def _showdown_username(agent_name: str) -> str:
-    """Sanitize an agent name into a valid Showdown username (≤18 chars, alphanumeric/hyphens)."""
-    name = re.sub(r"[^a-zA-Z0-9 -]", "-", agent_name)
-    return name[:18].strip("-")
+    """≤18 chars, alphanumeric/hyphens. Preserves the trailing 6-char uniqueness hash."""
+    safe = re.sub(r"[^a-zA-Z0-9-]", "-", agent_name)
+    if len(safe) <= 18:
+        return safe.strip("-")
+
+    m = re.match(r"^(.*)-([0-9a-f]{6})$", safe)
+    if m:
+        prefix, tag = m.group(1), m.group(2)
+        if len(prefix) > 11:
+            parts = [p for p in prefix.split("-") if p]
+            prefix = "-".join(p[:3] for p in parts)
+            if len(prefix) > 11:
+                prefix = prefix[:11].rstrip("-")
+        return f"{prefix}-{tag}".strip("-")
+
+    return safe[:18].strip("-")
 
 
 class BattleRunner:
@@ -91,7 +104,10 @@ class BattleRunner:
         print()
 
         start = time.time()
-        await p1.battle_against(p2, n_battles=n_battles)
+        for i in range(n_battles):
+            if i > 0:
+                await asyncio.sleep(1.0)
+            await p1.battle_against(p2, n_battles=1)
         elapsed = time.time() - start
 
         results = self._collect_results(p1, p2, agent1.name, agent2.name)

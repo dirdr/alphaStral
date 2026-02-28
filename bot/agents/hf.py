@@ -19,10 +19,6 @@ class HFAgent(LLMBattleAgent):
         super().__init__(model_id)
         self._client = InferenceClient(api_key=os.environ.get("HF_TOKEN"))
 
-    @property
-    def name(self) -> str:
-        return self._model_id.split("/")[-1]
-
     def _call_api(self, messages: list[dict]) -> str:
         r = self._client.chat.completions.create(
             model=self._model_id,
