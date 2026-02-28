@@ -16,16 +16,15 @@ A project by the Rustaceans Teams:
 
 Fine-tuned vs Foundation, Who will win a Pokemon Showdown Match ?
 
-![David-Goliath](./david_goliath_illustr.webp)
-
-## Run The Battle
+![David-Goliath](./davidgoliath.png)
 
 ### Showdown server
 
 <img src="showdown_logo.png" alt="drawing" width="100"/>
 
-[Pokemon ShowDown](https://en.wikipedia.org/wiki/Pok%C3%A9mon_Showdown) is the biggest Pokemon Battle online platform. It will be the game engine of the model battle.
-Battles run fully on a local machine. Which is great because it is bypassing imposed limits with the official Showdown instance.
+[Pokemon ShowDown](https://en.wikipedia.org/wiki/Pok%C3%A9mon_Showdown) is the biggest Pokemon Battle online platform. It will act as the game engine of the model battle.
+Battles will run on the local machine running the program.
+you will need to host an instance by following those steps:
 
 ```sh
 git clone https://github.com/smogon/pokemon-showdown.git
@@ -47,14 +46,14 @@ uv run python main.py --p1 random --p2 random --n 10
 uv run python main.py [OPTIONS]
 ```
 
-| Argument               | Default            | Description                                                            |
-| ---------------------- | ------------------ | ---------------------------------------------------------------------- |
-| `--p1`                 | `random`           | Agent for player 1                                                     |
-| `--p2`                 | `random`           | Agent for player 2                                                     |
-| `--n`                  | `1`                | Number of battles to run                                               |
-| `--format`             | `gen9randombattle` | Battle format (poke-env format ID, e.g. `gen9ou`, `gen8randombattle`)  |
-| `--move-delay SECONDS` | `0`                | Wait before each move — set to `2`–`3` for comfortable live spectating |
-| `--log-level`          | `INFO`             | Verbosity: `DEBUG` `INFO` `WARNING` `ERROR` (also `LOG_LEVEL` env var) |
+| Argument               | Default            | Description                                                                    |
+| ---------------------- | ------------------ | ------------------------------------------------------------------------------ |
+| `--p1`                 | `random`           | Agent for player 1                                                             |
+| `--p2`                 | `random`           | Agent for player 2                                                             |
+| `--n`                  | `1`                | Number of battles to run                                                       |
+| `--format`             | `gen9randombattle` | Battle format (poke-env format ID, e.g. `gen9ou`, `gen8randombattle`)          |
+| `--move-delay SECONDS` | `0`                | Wait before each move, usefully set to `2`–`3` for comfortable live spectating |
+| `--log-level`          | `INFO`             | Verbosity: `DEBUG` `INFO` `WARNING` `ERROR` (also `LOG_LEVEL` env var)         |
 
 **Examples**
 
@@ -65,6 +64,22 @@ uv run python main.py --p1 random --p2 random --n 10
 # watch live (slowed down)
 uv run python main.py --format gen9ou --n 1 --move-delay 2
 ```
+
+## How to watch live battle ?
+
+1. Start a battle (random vs random for reference):
+
+```sh
+uv run python main.py --p1 random --p2 random --move-delay 2
+```
+
+1. Go to the [locally hosted showdown](http://localhost:8000) and click `Watch Battle`, you will see the current running battle on the right side panel
+
+![battle-example](./battle_guide.png)
+
+1. Click on the current battle, and watch it !
+
+![watch_battle](./battle_live.png)
 
 ## Fine-tuning
 
