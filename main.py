@@ -50,20 +50,26 @@ def _setup_logging(level_name: str) -> None:
 
 
 def build_agent(name: str) -> BattleAgent:
-    """Agent registry. Add new agents here — nothing else needs to change."""
-    match name:
-        case "random":
-            return RandomAgent()
-        # Uncomment when ready:
-        # case "mistral-large":
-        #     from bot.agents.mistral import MistralAgent
-        #     return MistralAgent(model_id="mistral-large-latest")
-        # case "mistral-finetuned":
-        #     import os
-        #     from bot.agents.mistral import MistralAgent
-        #     return MistralAgent(model_id=os.environ["FINETUNED_MODEL_ID"])
-        case _:
-            raise ValueError(f"Unknown agent '{name}'. Available: random")
+    """Agent registry. Add new agents here — nothing else needs to change.
+
+    Available agents:
+      random
+      mistral:<model-id>   e.g. mistral:mistral-large-latest, mistral:ft:your-job-id
+      hf:<model-id>        e.g. hf:your-org/your-finetuned-model
+    """
+    if name == "random":
+        return RandomAgent()
+    if name.startswith("mistral:"):
+        from bot.agents.mistral import MistralAgent
+
+        return MistralAgent(model_id=name.removeprefix("mistral:"))
+    if name.startswith("hf:"):
+        from bot.agents.hf import HFAgent
+
+        return HFAgent(model_id=name.removeprefix("hf:"))
+    raise ValueError(
+        f"Unknown agent '{name}'. Available: random, mistral:<model-id>, hf:<model-id>"
+    )
 
 
 def main() -> None:
