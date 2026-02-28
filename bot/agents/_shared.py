@@ -245,11 +245,13 @@ class LLMBattleAgent(BattleAgent):
     History resets automatically at turn 1 of each new battle.
     """
 
-    def __init__(self, model_id: str) -> None:
+    def __init__(self, model_id: str, throttle_s: float = 1.0) -> None:
         self._model_id = model_id
         self._name = f"{model_id}-{uuid.uuid4().hex[:6]}"
         self._histories: dict[str, list[dict]] = {}  # battle_tag -> messages
         self._turn_stats: list[TurnStat] = []
+        self._throttle_s = throttle_s
+        self._last_call_end: float = 0.0
 
     @property
     def name(self) -> str:
@@ -279,6 +281,11 @@ class LLMBattleAgent(BattleAgent):
 
         logger.debug("[%s] Turn %d · history=%d msgs", self._model_id, state.turn, len(history))
 
+        if self._throttle_s > 0:
+            wait = self._throttle_s - (time.perf_counter() - self._last_call_end)
+            if wait > 0:
+                time.sleep(wait)
+
         t0 = time.perf_counter()
         try:
             raw = self._call_api(messages)
@@ -295,6 +302,8 @@ class LLMBattleAgent(BattleAgent):
             logger.warning("[%s] Error (%s), falling back to random.", self._model_id, exc)
             action = _random_fallback(state)
             used_fallback = True
+        finally:
+            self._last_call_end = time.perf_counter()
 
         self._turn_stats.append(
             TurnStat(

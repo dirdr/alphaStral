@@ -98,9 +98,9 @@ def main() -> None:
     parser.add_argument(
         "--move-delay",
         type=float,
-        default=0.0,
+        default=None,
         metavar="SECONDS",
-        help="Seconds to wait before submitting each move. Use >0 to slow battles for live spectating. Default: 0.",
+        help="Seconds to wait before submitting each move. Use >0 to slow battles for live spectating. Pass 0 to also disable the LLM rate-limit throttle. Default: auto (1 s throttle for LLM agents, 0 for random).",
     )
     parser.add_argument(
         "--log-level",
@@ -121,6 +121,14 @@ def main() -> None:
     agent1 = build_agent(args.p1)
     agent2 = build_agent(args.p2)
 
+    # If --move-delay 0 is explicit, disable the LLM rate-limit throttle too.
+    if args.move_delay == 0:
+        from bot.agents._shared import LLMBattleAgent
+
+        for agent in (agent1, agent2):
+            if isinstance(agent, LLMBattleAgent):
+                agent._throttle_s = 0.0
+
     logger.info(
         "Starting: %s vs %s · %d battle(s) · %s · local",
         args.p1,
@@ -136,7 +144,7 @@ def main() -> None:
     runner = BattleRunner(
         server_configuration=LocalhostServerConfiguration,
         battle_format=args.format,
-        move_delay=args.move_delay,
+        move_delay=args.move_delay or 0.0,
     )
     report = runner.run(agent1, agent2, n_battles=args.n)
 
