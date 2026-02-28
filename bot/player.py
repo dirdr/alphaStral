@@ -8,6 +8,7 @@ To use a different model, pass a different BattleAgent — that's all.
 from __future__ import annotations
 
 import logging
+import time
 
 from poke_env.battle.abstract_battle import AbstractBattle
 from poke_env.player.battle_order import BattleOrder
@@ -21,11 +22,12 @@ logger = logging.getLogger(__name__)
 
 
 class AgentPlayer(Player):
-    def __init__(self, agent: BattleAgent, **kwargs) -> None:
+    def __init__(self, agent: BattleAgent, move_delay: float = 0.0, **kwargs) -> None:
         super().__init__(**kwargs)
         self._agent = agent
         self._extractor = StateExtractor()
         self._parser = ActionParser()
+        self._move_delay = move_delay
 
     @property
     def agent(self) -> BattleAgent:
@@ -47,5 +49,8 @@ class AgentPlayer(Player):
             state.switches,
             action,
         )
+
+        if self._move_delay > 0:
+            time.sleep(self._move_delay)
 
         return self._parser.parse(action, battle, self)

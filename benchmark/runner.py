@@ -30,11 +30,13 @@ class BattleRunner:
         battle_format: str = "gen9randombattle",
         account1: AccountConfiguration | None = None,
         account2: AccountConfiguration | None = None,
+        move_delay: float = 0.0,
     ) -> None:
         self._server_configuration = server_configuration
         self._battle_format = battle_format
         self._account1 = account1
         self._account2 = account2
+        self._move_delay = move_delay
 
     def run(
         self,
@@ -60,12 +62,14 @@ class BattleRunner:
             account_configuration=self._account1,
             battle_format=self._battle_format,
             server_configuration=self._server_configuration,
+            move_delay=self._move_delay,
         )
         p2 = AgentPlayer(
             agent=agent2,
             account_configuration=self._account2,
             battle_format=self._battle_format,
             server_configuration=self._server_configuration,
+            move_delay=self._move_delay,
         )
 
         is_local = "localhost" in self._server_configuration.websocket_url

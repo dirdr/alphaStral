@@ -84,6 +84,13 @@ def main() -> None:
         help="Use public Showdown server (requires credentials). Default: local.",
     )
     parser.add_argument(
+        "--move-delay",
+        type=float,
+        default=0.0,
+        metavar="SECONDS",
+        help="Seconds to wait before submitting each move. Use >0 to slow battles for live spectating. Default: 0.",
+    )
+    parser.add_argument(
         "--log-level",
         default=os.getenv("LOG_LEVEL", "INFO").upper(),
         choices=["DEBUG", "INFO", "WARNING", "ERROR"],
@@ -135,6 +142,7 @@ def main() -> None:
         battle_format=args.format,
         account1=account1,
         account2=account2,
+        move_delay=args.move_delay,
     )
     runner.run(agent1, agent2, n_battles=args.n)
 
