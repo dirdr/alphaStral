@@ -11,6 +11,7 @@ import logging
 import random
 import re
 import time
+import uuid
 from abc import abstractmethod
 
 from benchmark.types import TurnStat
@@ -209,9 +210,12 @@ def _parse_action(raw: str, state: BattleState, model_id: str) -> BattleAction:
                 state.moves,
             )
             return _random_fallback(state)
+        tera = bool(data.get("tera", False)) and state.can_tera
+        if tera != bool(data.get("tera", False)):
+            logger.warning("[%s] Model requested tera but can_tera=False — ignoring.", model_id)
         return MoveAction(
             move_id=move_id,
-            tera=bool(data.get("tera", False)),
+            tera=tera,
             reasoning=str(data.get("reasoning", "")),
         )
 
@@ -243,12 +247,13 @@ class LLMBattleAgent(BattleAgent):
 
     def __init__(self, model_id: str) -> None:
         self._model_id = model_id
+        self._name = f"{model_id}-{uuid.uuid4().hex[:6]}"
         self._histories: dict[str, list[dict]] = {}  # battle_tag -> messages
         self._turn_stats: list[TurnStat] = []
 
     @property
     def name(self) -> str:
-        return self._model_id
+        return self._name
 
     @property
     def turn_stats(self) -> list[TurnStat]:
