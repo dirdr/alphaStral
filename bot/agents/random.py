@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import random
+import uuid
 
 from bot.agent import BattleAgent
 from bot.schema import BattleAction, BattleState, MoveAction, SwitchAction
@@ -11,9 +12,12 @@ from bot.schema import BattleAction, BattleState, MoveAction, SwitchAction
 class RandomAgent(BattleAgent):
     """Chooses uniformly at random between all legal moves and switches."""
 
+    def __init__(self) -> None:
+        self._name = f"random-{uuid.uuid4().hex[:6]}"
+
     @property
     def name(self) -> str:
-        return "random"
+        return self._name
 
     def choose_action(self, state: BattleState) -> BattleAction:
         all_options: list[BattleAction] = [
