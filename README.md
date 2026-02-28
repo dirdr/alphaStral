@@ -103,7 +103,7 @@ open reports/<your_run_file>.html
 
 ![go_brr](./images/gpus_go_brrr.webp)
 
-The dataset is scraped from Pokemon Showdown replays (gen9ou, 1500+ ELO) and enriched with PokeAPI data (types, stats, move power/category).
+The dataset is scraped from Pokemon Showdown replays (gen9randombattle, 1500+ ELO) and enriched with PokeAPI data (types, stats, move power/category).
 
 ```sh
 uv run python finetune/scraper.py
