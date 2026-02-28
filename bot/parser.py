@@ -54,6 +54,7 @@ class ActionParser:
             )
             return player.choose_random_move(battle)
 
+        logger.debug("Parsed move: %s (tera=%s)", move.id, action.tera)
         return player.create_order(move, terastallize=action.tera)
 
     def _parse_switch(
@@ -71,4 +72,5 @@ class ActionParser:
             )
             return player.choose_random_move(battle)
 
+        logger.debug("Parsed switch: → %s", target.species)
         return player.create_order(target)

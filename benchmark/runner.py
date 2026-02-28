@@ -8,15 +8,19 @@ works identically for Random vs Random or Mistral vs Finetuned.
 from __future__ import annotations
 
 import asyncio
+import logging
 import time
 import uuid
 
 from poke_env import ServerConfiguration
 from poke_env.concurrency import POKE_LOOP
+from poke_env.ps_client import AccountConfiguration
 
 from benchmark.types import BattleResult, BenchmarkReport
 from bot.agent import BattleAgent
 from bot.player import AgentPlayer
+
+logger = logging.getLogger(__name__)
 
 
 class BattleRunner:
@@ -24,9 +28,13 @@ class BattleRunner:
         self,
         server_configuration: ServerConfiguration,
         battle_format: str = "gen9randombattle",
+        account1: AccountConfiguration | None = None,
+        account2: AccountConfiguration | None = None,
     ) -> None:
         self._server_configuration = server_configuration
         self._battle_format = battle_format
+        self._account1 = account1
+        self._account2 = account2
 
     def run(
         self,
@@ -49,21 +57,35 @@ class BattleRunner:
     ) -> BenchmarkReport:
         p1 = AgentPlayer(
             agent=agent1,
+            account_configuration=self._account1,
             battle_format=self._battle_format,
             server_configuration=self._server_configuration,
         )
         p2 = AgentPlayer(
             agent=agent2,
+            account_configuration=self._account2,
             battle_format=self._battle_format,
             server_configuration=self._server_configuration,
         )
 
         is_local = "localhost" in self._server_configuration.websocket_url
         watch_url = (
-            "http://localhost:8000"
+            "http://localhost.psim.us/?port=8000"
             if is_local
             else f"https://play.pokemonshowdown.com → search '{p1.username}'"
         )
+
+        logger.info(
+            "Battle session: %s (%s) vs %s (%s) · %d battle(s) · format=%s",
+            agent1.name,
+            p1.username,
+            agent2.name,
+            p2.username,
+            n_battles,
+            self._battle_format,
+        )
+        logger.debug("Auth mode: %s", "credentials" if self._account1 else "guest")
+
         print(f"  {agent1.name} ({p1.username})  vs  {agent2.name} ({p2.username})")
         print(f"  Watch: {watch_url}")
         print()
@@ -81,6 +103,17 @@ class BattleRunner:
             p2_wins=p2.n_won_battles,
             draws=n_battles - p1.n_won_battles - p2.n_won_battles,
             results=results,
+        )
+
+        logger.info(
+            "Done: %d battles in %.1fs · %s %dW/%dL · win rate %.1f%% · avg %.1f turns",
+            n_battles,
+            elapsed,
+            agent1.name,
+            p1.n_won_battles,
+            p2.n_won_battles,
+            report.p1_win_rate * 100,
+            report.avg_game_length,
         )
 
         print(f"  Done — {n_battles} battle(s) in {elapsed:.1f}s")

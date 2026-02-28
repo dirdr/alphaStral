@@ -8,6 +8,7 @@ version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
     { name = "poke-env" },
+    { name = "python-dotenv" },
 ]
 
 [package.dev-dependencies]
@@ -16,7 +17,10 @@ dev = [
 ]
 
 [package.metadata]
-requires-dist = [{ name = "poke-env", specifier = ">=0.11.0" }]
+requires-dist = [
+    { name = "poke-env", specifier = ">=0.11.0" },
+    { name = "python-dotenv", specifier = ">=1.0.0" },
+]
 
 [package.metadata.requires-dev]
 dev = [{ name = "ruff", specifier = ">=0.15.4" }]
@@ -230,6 +234,15 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/c2/89/8d5e191966216ac8d52eed7601929b2674cd7c84e3f98bf8851e43818d50/poke_env-0.11.0.tar.gz", hash = "sha256:19d514ec28c5391facc0cc5964c2a7a530b4846ddac8df2cae34d21b9bd53bf3", size = 1222401, upload-time = "2025-12-05T01:32:25.857Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/33/67/b55470ce7b91bff23c7b17c7f0ede15e8b7e87ec7361e15ced2bf1c64cd8/poke_env-0.11.0-py3-none-any.whl", hash = "sha256:2915d4777cb0bd1aa76416982db48cb55e0dda1ab862f3b1eb506ab0d639272d", size = 1347163, upload-time = "2025-12-05T01:32:24.03Z" },
+]
+
+[[package]]
+name = "python-dotenv"
+version = "1.2.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/f0/26/19cadc79a718c5edbec86fd4919a6b6d3f681039a2f6d66d14be94e75fb9/python_dotenv-1.2.1.tar.gz", hash = "sha256:42667e897e16ab0d66954af0e60a9caa94f0fd4ecf3aaf6d2d260eec1aa36ad6", size = 44221, upload-time = "2025-10-26T15:12:10.434Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/14/1b/a298b06749107c305e1fe0f814c6c74aea7b2f1e10989cb30f544a1b3253/python_dotenv-1.2.1-py3-none-any.whl", hash = "sha256:b81ee9561e9ca4004139c6cbba3a238c32b03e4894671e181b671e8cb8425d61", size = 21230, upload-time = "2025-10-26T15:12:09.109Z" },
 ]
 
 [[package]]

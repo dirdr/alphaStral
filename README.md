@@ -15,18 +15,50 @@ Fine-tuned vs Foundation, Who will win a Pokemon Showdown Match ?
 
 ## Run The Battle
 
-### Showdown local instance
+### Showdown server
 
-To make the battle happen, you need to start out a Pokemon Showdown local server. Both agent will play on this isolated instance.
-This is the game engine, which handle all the rule, current game state and results.
+Two hosting modes are supported. Choose based on your goal.
+
+---
+
+**Local — for training and benchmarking**
+
+Battles run fully on your machine. No accounts needed, no rate limits, no internet required.
+Use this when running many battles to collect stats.
 
 ```sh
-npx -y pokemon-showdown
+git clone https://github.com/smogon/pokemon-showdown.git
+cd pokemon-showdown
+npm install
+cp config/config-example.js config/config.js
+node pokemon-showdown start --no-security
 ```
 
-On the port 8000, a fresh instance of Pokemon Showdown will be available
+Then run battles:
 
-### Start out battle
+```sh
+uv run python main.py --p1 random --p2 random --n 10
+```
+
+---
+
+**Public — for live spectating**
+
+Battles run on the official Pokémon Showdown server and are watchable live in the browser.
+Use this when you want to observe a real confrontation between the two agents.
+
+Requires two registered accounts at [play.pokemonshowdown.com](https://play.pokemonshowdown.com).
+Add credentials to `.env` (see `.env.example`), then:
+
+```sh
+uv run python main.py --p1 random --p2 random --n 1 --showdown
+```
+
+The printed URL lets you spectate the battle live on [play.pokemonshowdown.com](https://play.pokemonshowdown.com).
+
+---
+
+### Start the battle
 
 ## Model
 
