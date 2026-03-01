@@ -182,8 +182,9 @@ Second experiment on an A100. Dataset: gen9randombattle replays. Quantization wa
 
 | Matchup | Battles | Win rate |
 |---|---|---|
-| AlphaStral vs mistral-small-latest (24B) | 10 | **50%** |
 | AlphaStral vs ministral-3b-latest (3B) | 10 | **80%** |
+| AlphaStral vs mistral-small-latest (24B) | 10 | **50%** |
+| AlphaStral vs mistral-large-latest (123B) | 10 | **40%** |
 
 ## Potential improvements
 
