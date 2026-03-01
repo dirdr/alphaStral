@@ -178,6 +178,13 @@ Second experiment on an A100. Dataset: gen9randombattle replays. Quantization wa
 | max_length | 512 |
 | precision | bf16 |
 
+## Benchmarks
+
+| Matchup | Battles | Win rate |
+|---|---|---|
+| AlphaStral vs mistral-small-latest (24B) | 10 | **50%** |
+| AlphaStral vs ministral-3b-latest (3B) | 10 | **80%** |
+
 ## Potential improvements
 
 - **Dataset diversity** - scraping more replays could improve generalization.
