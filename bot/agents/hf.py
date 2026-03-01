@@ -37,7 +37,7 @@ def _build_finetuned_prompt(state: BattleState) -> str:
 class HFAgent(LLMBattleAgent):
     def __init__(self, model_id: str) -> None:
         super().__init__(model_id)
-        self._client = InferenceClient(api_key=os.environ.get("HF_TOKEN"))
+        self._client = InferenceClient(api_key=os.environ.get("HF_TOKEN"), provider="hf-inference")
         self._current_state: BattleState | None = None
 
     def choose_action(self, state: BattleState):

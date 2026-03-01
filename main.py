@@ -85,8 +85,12 @@ def build_agent(name: str) -> BattleAgent:
         from bot.agents.hf import HFAgent
 
         return HFAgent(model_id=name.removeprefix("hf:"))
+    if name.startswith("local:"):
+        from bot.agents.local import LocalAgent
+
+        return LocalAgent(model_id=name.removeprefix("local:"))
     raise ValueError(
-        f"Unknown agent '{name}'. Available: random, mistral:<model-id>, hf:<model-id>"
+        f"Unknown agent '{name}'. Available: random, mistral:<model-id>, hf:<model-id>, local:<model-id>"
     )
 
 
