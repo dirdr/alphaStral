@@ -16,6 +16,8 @@ A project by the Rustaceans Teams:
 
 Fine-tuned vs Foundation, Who will win a Pokemon Showdown Match ?
 
+![alphaStrale](./images/alpha-stral.png)
+
 ![David-Goliath](images/davidgoliath.png)
 
 ### Showdown server
