@@ -126,27 +126,27 @@ First experiment run on a Colab T4. Dataset: gen9ou replays at 1500+ ELO. The mo
 
 **LoRA**
 
-| Parameter | Value |
-|---|---|
-| r | 16 |
-| lora_alpha | 16 |
+| Parameter      | Value                                                         |
+| -------------- | ------------------------------------------------------------- |
+| r              | 16                                                            |
+| lora_alpha     | 16                                                            |
 | target_modules | q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj |
-| lora_dropout | 0 |
-| bias | none |
+| lora_dropout   | 0                                                             |
+| bias           | none                                                          |
 
 **Training**
 
-| Parameter | Value |
-|---|---|
-| max_steps | 100 |
-| learning_rate | 1e-4 |
-| warmup_steps | 10 |
-| batch_size (per device) | 4 |
+| Parameter                   | Value                   |
+| --------------------------- | ----------------------- |
+| max_steps                   | 100                     |
+| learning_rate               | 1e-4                    |
+| warmup_steps                | 10                      |
+| batch_size (per device)     | 4                       |
 | gradient_accumulation_steps | 4 (effective batch: 16) |
-| optimizer | paged_adamw_8bit |
-| eval / save every | 50 steps |
-| max_length | 512 |
-| precision | bf16 |
+| optimizer                   | paged_adamw_8bit        |
+| eval / save every           | 50 steps                |
+| max_length                  | 512                     |
+| precision                   | bf16                    |
 
 ---
 
@@ -156,27 +156,27 @@ Second experiment on an A100. Dataset: gen9randombattle replays. Quantization wa
 
 **LoRA**
 
-| Parameter | Value |
-|---|---|
-| r | 32 |
-| lora_alpha | 32 |
+| Parameter      | Value                                                         |
+| -------------- | ------------------------------------------------------------- |
+| r              | 32                                                            |
+| lora_alpha     | 32                                                            |
 | target_modules | q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj |
-| lora_dropout | 0 |
-| bias | none |
+| lora_dropout   | 0                                                             |
+| bias           | none                                                          |
 
 **Training**
 
-| Parameter | Value |
-|---|---|
-| max_steps | 1000 |
-| learning_rate | 1e-4 |
-| warmup_steps | 50 |
-| batch_size (per device) | 16 |
+| Parameter                   | Value                   |
+| --------------------------- | ----------------------- |
+| max_steps                   | 1000                    |
+| learning_rate               | 1e-4                    |
+| warmup_steps                | 50                      |
+| batch_size (per device)     | 16                      |
 | gradient_accumulation_steps | 1 (effective batch: 16) |
-| optimizer | adamw_torch |
-| eval / save every | 200 steps |
-| max_length | 512 |
-| precision | bf16 |
+| optimizer                   | adamw_torch             |
+| eval / save every           | 200 steps               |
+| max_length                  | 512                     |
+| precision                   | bf16                    |
 
 ## Benchmarks
 
@@ -190,7 +190,3 @@ Second experiment on an A100. Dataset: gen9randombattle replays. Quantization wa
 - **Dataset diversity** - scraping more replays could improve generalization.
 - **Richer prompt context** - adding held items to the prompt could help the model make better decisions.
 - **Larger rank** - increasing `r` beyond 32 would give the adapters more capacity to learn complex battle strategies, at the cost of more VRAM.
-
-## Model
-
-The battle will be between
